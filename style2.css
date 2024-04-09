@@ -1,0 +1,36 @@
+.hero-div {
+  height: 400px;
+  width: 600px;
+  background-color: #ddd8b8;
+  margin: 0 auto;
+  overflow: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: 20px;
+}
+
+.menu-button {
+  padding: 3px;
+  margin: 5px 4px;
+  width: 100px;
+  text-wrap: nowrap;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  margin-left: 16px;
+}
+.block {
+  color: white;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  font-size: 14px;
+  box-shadow: 0px 0px 4px gray;
+  margin-left: 15px;
+}
+
+.block.show {
+  opacity: 1;
+}
