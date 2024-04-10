@@ -1,57 +1,57 @@
-const heroDiv = document.getElementById('heroDiv');
-heroDiv.classList.add('hero-div');
+const heroDiv = document.getElementById("heroDiv");
+heroDiv.classList.add("hero-div");
 let blocks = [];
-
+let prevColor = "";
 const colors = ["#A64253", "#8491A3", "#315C2B", "#BFA4A4", "#9EA93F"];
 const widths = ["100px", "200px", "190px", "120px", "150px"];
 const heights = ["90px", "180px", "200px", "120px", "150px"];
 const texts = [
-    "Hello World",
-    "I'm hungry",
-    "I wanna sleep",
-    "I'm keen on ice late",
-    "Stephen King is my love",
+  "Hello World",
+  "I'm hungry",
+  "I wanna sleep",
+  "I'm keen on ice late",
+  "Stephen King is my love",
 ];
 
 function setRandomProperties(item) {
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    const randomWidth = widths[Math.floor(Math.random() * widths.length)];
-    const randomHeight = heights[Math.floor(Math.random() * heights.length)];
-    const randomText = texts[Math.floor(Math.random() * texts.length)];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  const randomWidth = widths[Math.floor(Math.random() * widths.length)];
+  const randomHeight = heights[Math.floor(Math.random() * heights.length)];
+  const randomText = texts[Math.floor(Math.random() * texts.length)];
 
-    item.style.backgroundColor = randomColor;
-    item.style.width = randomWidth;
-    item.style.height = randomHeight;
-    item.textContent = randomText;
+  item.style.backgroundColor = randomColor;
+  item.style.width = randomWidth;
+  item.style.height = randomHeight;
+  item.textContent = randomText;
 }
 
 function addBlock() {
-    const blockId = prompt("Enter block id:");
-    if (!blockId) return;
+  const blockId = prompt("Enter block id:");
+  if (!blockId) return;
 
-    const newBlock = document.createElement("div");
-    newBlock.id = blockId;
-    newBlock.classList.add("block"); 
-    setRandomProperties(newBlock);
-    heroDiv.appendChild(newBlock);
+  const newBlock = document.createElement("div");
+  newBlock.id = blockId;
+  newBlock.classList.add("block");
+  setRandomProperties(newBlock);
+  heroDiv.appendChild(newBlock);
 
-    setTimeout(() => {
-        newBlock.classList.add("show");
-    }, 100); 
+  setTimeout(() => {
+    newBlock.classList.add("show");
+  }, 100);
 
-    const prevColor = newBlock.style.backgroundColor; 
-     newBlock.addEventListener('click', () => {
-        const width = newBlock.offsetWidth;
-        const height = newBlock.offsetHeight;
-        const coordinateContainerLeft = newBlock.offsetLeft; // відносно контейнера
-        const coordinateContainerTop = newBlock.offsetTop;
-        const BoundingClientRect = newBlock.getBoundingClientRect();
-        const coordinateBrowserTop = window.scrollY + BoundingClientRect.top; // відносно вікна браузера
-        const coordinateBrowserLeft = window.scrollX + BoundingClientRect.left; // відносно вікна браузера
-        const scrollTop = heroDiv.scrollTop;
-        const scrollLeft = heroDiv.scrollLeft;
+  const prevColor = newBlock.style.backgroundColor;
+  newBlock.addEventListener("click", () => {
+    const width = newBlock.offsetWidth;
+    const height = newBlock.offsetHeight;
+    const coordinateContainerLeft = newBlock.offsetLeft; // відносно контейнера
+    const coordinateContainerTop = newBlock.offsetTop;
+    const BoundingClientRect = newBlock.getBoundingClientRect();
+    const coordinateBrowserTop = window.scrollY + BoundingClientRect.top; // відносно вікна браузера
+    const coordinateBrowserLeft = window.scrollX + BoundingClientRect.left; // відносно вікна браузера
+    const scrollTop = heroDiv.scrollTop;
+    const scrollLeft = heroDiv.scrollLeft;
 
-        const message = `
+    const message = `
             Width: ${width}px\n
             Height: ${height}px\n
             Coordinate (relative to container):\n
@@ -64,35 +64,72 @@ function addBlock() {
               Top: ${scrollTop}px\n
               Left: ${scrollLeft}px\n
         `;
-        alert(message);
-    });
-    newBlock.addEventListener('mouseover', () => {
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-        newBlock.style.transition = "background-color 0.5s ease";
-        newBlock.style.backgroundColor = randomColor;
-    });
-    newBlock.addEventListener('mouseout', () => {
-        newBlock.style.transition = "background-color 0.5s ease";
-        newBlock.style.backgroundColor = prevColor; 
-    });
+    alert(message);
+  });
+    newBlock.addEventListener("mouseover", () => {
+    newBlock.dataset.prevColor = newBlock.style.backgroundColor;
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    newBlock.style.transition = "background-color 0.5s ease";
+    newBlock.style.backgroundColor = randomColor;
+  });
 
-    blocks.push(newBlock);
+  newBlock.addEventListener("mouseout", () => {
+    newBlock.style.transition = "background-color 0.5s ease";
+    newBlock.style.backgroundColor = newBlock.dataset.prevColor || ""; //  попередній колір або якщо немає попереднього кольору
+  });
+
+  blocks.push(newBlock);
 }
 function removeBlock() {
-    const blockIdToDelete = prompt("Enter the ID of the block you want to delete:");
-    if (!blockIdToDelete) return;
+  const blockIdToDelete = prompt(
+    "Enter the ID of the block you want to delete:"
+  );
+  if (!blockIdToDelete) return;
 
-    const blockToRemove = document.getElementById(blockIdToDelete);
-    if (blockToRemove) {
-        blockToRemove.remove();
-        blocks = blocks.filter(block => block.id !== blockIdToDelete); 
-    } else {
-        alert(`Block with ID ${blockIdToDelete} not found.`);
-    }
+  const blockToRemove = document.getElementById(blockIdToDelete);
+  if (blockToRemove) {
+    blockToRemove.remove();
+    blocks = blocks.filter((block) => block.id !== blockIdToDelete);
+  } else {
+    alert(`Block with ID ${blockIdToDelete} not found`);
+  }
 }
+const styleOption = document.getElementById("changeStyleSelect");
+const selectedBlock = document.getElementById("selectedBlockId");
+const changeBtn = document.getElementById("changeBtn");
+changeBtn.addEventListener("click", () => {
+  const selectedBlockValue = selectedBlock.value.trim();
+  const targetBlock = document.getElementById(selectedBlockValue);
+  if (!targetBlock) {
+    alert("There is no such block");
+    return;
+  }
 
-const addBtn = document.getElementById('addBtn');
-addBtn.addEventListener('click', addBlock);
+  const selectedStyle = styleOption.value;
 
-const removeBtn = document.getElementById('removeBtn');
-removeBtn.addEventListener('click', removeBlock);
+  switch (selectedStyle) {
+    case "fontSize":
+      const fontSize = prompt("Enter font size (px):");
+      if (fontSize) {
+        targetBlock.style.fontSize = fontSize + "px";
+      }
+    case "color":
+      const color = prompt("Enter color name:");
+      if (color) {
+        targetBlock.style.backgroundColor = color;
+      }
+      break;
+    case "width":
+      const width = prompt("Enter block width (px):");
+      if (width) {
+        targetBlock.style.width = width;
+      }
+      break;
+  }
+});
+
+const addBtn = document.getElementById("addBtn");
+addBtn.addEventListener("click", addBlock);
+
+const removeBtn = document.getElementById("removeBtn");
+removeBtn.addEventListener("click", removeBlock);
